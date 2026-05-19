@@ -489,7 +489,21 @@ pkill -f main.py
 
 ## 🔥 Future Improvements
 
-* MQTT integration
 * integrating with sensors
+  
+## 🛠️ Technologies Used
+
+### Hardware
+- Raspberry Pi CM4
+- SX1302 LoRaWAN HAT
+- STM32
+- BLE Beacon Devices
+
+### Software
+- Python
+- BlueZ / DBus
+- BATMAN Mesh
+- Linux Networking
+- UART Serial Communication
 
 ---
