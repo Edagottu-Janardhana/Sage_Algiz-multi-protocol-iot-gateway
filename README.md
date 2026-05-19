@@ -1,7 +1,9 @@
-# sage-algiz-embedded-gateway
-Multi-protocol embedded gateway architecture supporting LoRaWAN, BLE, Ethernet and Wi-Fi communication.
+# Sage Algiz – Multi-Protocol Embedded IoT Gateway
 
-# 🚀 Sage Algiz - Event Driven IoT Mesh Node
+Sage Algiz is a Raspberry Pi CM4 based event-driven embedded IoT gateway designed for reliable emergency event communication using BLE, Ethernet, Wi-Fi/BATMAN Mesh, LoRaWAN, and UART communication.
+
+The system supports wearable beacon communication, dynamic routing, automatic node commissioning, BLE control services, and multi-interface failover for robust edge-network deployment.
+
 
 ## 📌 Overview
 
@@ -15,7 +17,89 @@ Sage Algiz is an **event-driven multi-communication IoT node system** designed t
 
 It dynamically **routes packets**, **auto-configures mesh IP**, and supports **commissioning (auto sequence assignment)**.
 
+## 🎯 Primary Use Case
+
+Sage Algiz is designed for emergency communication and distributed IoT deployments where reliable event forwarding is critical.
+
+Example scenarios:
+- Wearable emergency beacon systems
+- Industrial safety monitoring
+- Fall detection systems
+- Mesh-based edge communication
+- Low-power event-triggered IoT devices
 ---
+## 🔵 BLE Communication Flow
+
+### Beacon → Gateway Communication
+
+1. Wearable beacon advertises BLE packets containing:
+   - Device ID
+   - Event type
+   - Status information
+
+2. Gateway continuously scans as BLE Central.
+
+3. Upon receiving advertisement:
+   - Packet validation is performed
+   - Event data is parsed
+   - ACK/response is transmitted
+
+4. If BLE communication fails for a timeout duration:
+   - System switches to LoRaWAN fallback transmission
+
+5. After transmission:
+   - Beacon enters low-power sleep mode
+     
+## 🔄 Dual BLE Role Architecture
+
+The gateway operates simultaneously as:
+
+### BLE Central
+- Scans nearby wearable beacon advertisements
+- Receives event packets
+- Handles beacon communication
+
+### BLE Peripheral
+- Advertises gateway identity
+- Allows mobile application connectivity
+- Accepts BLE GATT control/configuration commands
+- Supports LED and device control operations
+
+## 🛰️ LoRaWAN Fallback Logic
+
+BLE communication is used as the primary low-power event transport mechanism.
+
+If BLE delivery becomes unavailable:
+- Beacon automatically switches to LoRaWAN transmission
+- Gateway receives packets using SX1302 concentrator
+- Events continue forwarding through alternate communication paths
+### Forward Path Priority
+
+  BLE Event → Ethernet → BATMAN Mesh → LoRaWAN
+  
+  Routing decisions are based on interface availability and communication priority.
+
+  Priority Order:
+  1. Ethernet
+  2. BATMAN Mesh / Wi-Fi
+  3. LoRaWAN
+
+  This provides:
+  - automatic failover
+  - improved reliability
+  - redundant communication paths
+
+## 🔋 Power Reliability
+
+The gateway supports:
+- PoE (Power over Ethernet)
+- Battery backup operation
+
+If PoE power becomes unavailable:
+- System automatically switches to battery power
+- Communication services continue without interruption
+
+This ensures reliable operation during power failures.
 
 ## 🧠 Block Diagram (RPI CM4 ↔ SX1302 LoRaWAN HAT ↔ Sensors)
 
@@ -30,7 +114,7 @@ It dynamically **routes packets**, **auto-configures mesh IP**, and supports **c
  +------------------+             |  - GPIO (LED)     |                                   
                                   +---------+---------+                                   
                                             |                                            
-                                        UART / GPIO
+                                           UART
                                             |                                               
                                             v                                             
                                       +-------------+                              
